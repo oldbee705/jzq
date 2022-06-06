@@ -1,0 +1,77 @@
+import { Tooltip, Row, Col, Alert } from 'antd';
+import React from 'react';
+import { useState } from 'react';
+import './a.css';
+
+export default function () {
+  const[players,setplayers]= useState('O')
+  const[O]= useState([])
+  const[X]= useState([])
+  const winList = [['1','2','3'],['4','5','6'],['7','8','9'],['1','4','7'],['2','5','8'],['3','6','9'],['1','5','9'],['3','5','7']]
+  let ifWin = true
+
+  function isWin(){  
+    for(var w = 0;w < 8;w++){
+      if((O.includes(winList[w][0]) && O.includes(winList[w][1]) && O.includes(winList[w][2]))||
+      (X.includes(winList[w][0]) && X.includes(winList[w][1]) && X.includes(winList[w][2]))){
+        ifWin = false
+        return(
+          <Alert message={players + ' win!'} type='success'/>
+        )
+      }
+    }
+    if(O.length + X.length === 9 && ifWin === true){
+      ifWin = false
+      return(
+        <Alert message={'平局!'} type='warning'/>
+      )
+    }
+  }
+
+  const hdC = (e) =>{
+    if(ifWin){
+      if(players === 'X'){
+        if(e.target.className === 'ant-col ant-col-8 space'){
+          e.target.setAttribute("class", "ant-col ant-col-8 X")
+          setplayers('O')
+          O.push(e.target.id)
+        }
+      }else if(players === 'O'){
+        if(e.target.className === 'ant-col ant-col-8 space'){
+          e.target.setAttribute("class", "ant-col ant-col-8 O")
+          setplayers('X')
+          X.push(e.target.id)
+        }
+      }
+    }
+    
+    // console.log(e.target.className)
+    // ant-col ant-col-8 space
+  }
+  
+  return (
+  <>
+    <Tooltip>
+      <span>现在是{players}的回合</span>
+    </Tooltip>
+    <div className='map'>
+      <Row>
+        <Col span={8} className='space' onClick={hdC} id='1' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='2' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='3' ></Col>
+      </Row>
+      <Row>
+        <Col span={8} className='space' onClick={hdC} id='4' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='5' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='6' ></Col>
+      </Row>
+      <Row>
+        <Col span={8} className='space' onClick={hdC} id='7' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='8' ></Col>
+        <Col span={8} className='space' onClick={hdC} id='9' ></Col>
+      </Row>
+    </div>
+    {isWin()}
+  </>
+  )
+}
